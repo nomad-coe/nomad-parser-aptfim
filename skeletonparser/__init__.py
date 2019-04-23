@@ -74,8 +74,8 @@ class SkeletonParser(AbstractBaseParser):
 
         # Subsections work like before. The parent section must still be open.
         data_gid = backend.openSection('section_data')
-        backend.addValue('data_repository_name', 'zenedo.org')
-        backend.addValue('data_repository_url', 'https://zenedo.org/path/to/mydata')
+        backend.addValue('data_repository_name', 'zenodo.org')
+        backend.addValue('data_repository_url', 'https://zenodo.org/path/to/mydata')
         backend.addValue('data_preview_url', 'https://www.physicsforums.com/insights/wp-content/uploads/2015/09/fem.jpg')
         backend.closeSection('section_data', data_gid)
 
