@@ -67,12 +67,16 @@ class SkeletonParser(AbstractBaseParser):
         # When multiple sections of the same type (e.g. 'section_experiment') are open,
         # you can use the 'gid' as an additional argument.
         backend.addValue('experiment_location', data.get('location'))
-        # Values do not necessarely have to be read from the parsed file.
-        backend.addValue('experiment_method_name', data.get('method', 'Bare eyes'))
         # The backend will check the type of the given value agains the metadata definition.
         backend.addValue('experiment_time', int(datetime.strptime(data.get('date'), '%d.%M.%Y').timestamp()))
 
         # Subsections work like before. The parent section must still be open.
+        method_gid = backend.openSection('section_method')
+        backend.addValue('experiment_method_name', data.get('method', 'Bare eyes'))
+        # Values do not necessarely have to be read from the parsed file.
+        backend.addValue('probing_method', 'laser pulsing')
+        backend.closeSection('section_method', method_gid)
+
         data_gid = backend.openSection('section_data')
         backend.addValue('data_repository_name', 'zenodo.org')
         backend.addValue('data_repository_url', 'https://zenodo.org/path/to/mydata')
@@ -84,6 +88,8 @@ class SkeletonParser(AbstractBaseParser):
         backend.addValue('sample_chemical_name', data.get('sample_chemical'))
         backend.addValue('sample_chemical_formula', data.get('sample_formula'))
         backend.addValue('sample_temperature', data.get('sample_temp'))
+        backend.addValue('sample_microstructure', 'thin films')
+        backend.addValue('sample_constituents', 'multi phase')
 
         atoms = set(ase.Atoms(data.get('sample_formula')).get_chemical_symbols())
         # To add arrays (vectors, matrices, etc.) use addArrayValues and provide a
