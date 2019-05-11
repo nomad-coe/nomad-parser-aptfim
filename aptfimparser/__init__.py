@@ -58,74 +58,61 @@ class APTFIMParser(AbstractBaseParser):
 
         with open(filepath, 'rt') as f:
             data = json.load(f)
-            #print(data)
-
-        # # You need to open sections before you can add values or sub sections to it.
-        # # The returned 'gid' can be used to reference a specific section if multiple
-        # # sections of the same type are opened.
-        #test_gid = backend.openSection('experiment_cantext')
-        #backend.addValue('context_headxx', data.get('experiment_type'))
-        #backend.closeSection('experiment_context', test_gid)
 
         root_gid = backend.openSection('section_experiment')
-        # # Values do not necessarily have to be read from the parsed file.
-        # # The backend will check the type of the given value agains the metadata definition.
-        # backend.addValue('experiment_time', int(datetime.strptime(data.get('date'), '%d.%M.%Y').timestamp()))
-        #
-        # # Read data .
-#        data_gid = backend.openSection('section_context')
-        #data_gid = backend.openSection('section_experiment')
-        # addValue
-        # first argument STRING IDENTIFIER IN OUTPUT JSON KEYWORDS from aptfim.nomadmetainfo.json (ie. the generated parser result JSON)
-        # second argument STRING IDENTIFIER IN INPUT JSON (ie. the small META DATA FILE TO THE DATASET
-        #backend.addValue('data_repository_name', data.get('data_repository_name'))
-        #backend.addValue('data_repository_url', data.get('data_repository_url'))
-        #backend.addValue('data_preview_url', data.get('data_preview_url'))
-#        backend.addValue('real_one', data.get('experiment_typpe'))
-#        backend.closeSection('section_context', data_gid)
 
         # Read general tool environment details
-        # general_gid = backend.openSection('section_experiment_general_parameters')
-        
-        backend.addValue('experiment_method', data.get('experiment_method'))
         backend.addValue('experiment_location', data.get('experiment_location'))
         backend.addValue('experiment_facility_institution', data.get('experiment_facility_institution'))
-        backend.addValue('experiment_tool_info', data.get('instrument_info')) ###test here the case that input.json keyword is different to output.json
-        
-#        backend.addValue('experiment_data_global_start', np.array(re.findall(r"[\w']+", data.get('experiment_data_global_start'))))  ####
-#        backend.addValue('experiment_data_global_end', np.array(re.findall(r"[\w']+", data.get('experiment_data_global_end'))))  ####
-#        backend.addValue('experiment_data_local_start', np.array(re.findall(r"[\w']+", data.get('experiment_data_local_start')))) ####
-        
-#        backend.addValue('experiment_operation_method', data.get('experiment_operation_method'))
-#        backend.addValue('experiment_imaging_method', data.get('experiment_imaging_method'))
+        backend.addValue('experiment_summary', '%s of %s.' % (data.get('experiment_method').capitalize(), data.get('specimen_description')))
+        try:
+            backend.addValue('experiment_time', int(datetime.strptime(data.get('experiment_date_global_start'), '%d.%m.%Y %M:%H:%S').timestamp()))
+        except ValueError:
+            pass
+        try:
+            backend.addValue('experiment_end_time', int(datetime.strptime(data.get('experiment_date_global_end'), '%d.%m.%Y %M:%H:%S').timestamp()))
+        except ValueError:
+            pass
+
+        # Read data parameters
+        data_gid = backend.openSection('section_data')
+        backend.addValue('data_repository_name', data.get('data_repository_name'))
+        backend.addValue('data_repository_url', data.get('data_repository_url'))
+        preview_url = data.get('data_preview_url')
+        # TODO: This a little hack to correct the preview url and should be removed
+        # after urls are corrected
+        preview_url = '%s/files/%s' % tuple(preview_url.rsplit('/', 1))
+        backend.addValue('data_preview_url', preview_url)
+        backend.closeSection('section_data', data_gid)
+
+        # Read parameters related to method
+        method_gid = backend.openSection('section_method')
+        backend.addValue('experiment_method_name', data.get('experiment_method'))
+        backend.addValue('experiment_method_abbreviation', 'APT/FIM')
+        backend.addValue('probing_method', 'electric pulsing')
+        # backend.addValue('experiment_tool_info', data.get('instrument_info')) ###test here the case that input.json keyword is different to output.json
+        # measured_pulse_voltage for instance should be a conditional read
+        # backend.addValue('measured_number_ions_evaporated', data.get('measured_number_ions_evaporated'))
+        # backend.addValue('measured_detector_hit_pos', data.get('measured_detector_hit_pos'))
+        # backend.addValue('measured_detector_hit_mult', data.get('measured_detector_hit_mult'))
+        # backend.addValue('measured_detector_dead_pulses', data.get('measured_detector_dead_pulses'))
+        # backend.addValue('measured_time_of_flight', data.get('measured_time_of_flight'))
+        # backend.addValue('measured_standing_voltage', data.get('measured_standing_voltage'))
+        # backend.addValue('measured_pulse_voltage', data.get('measured_pulse_voltage'))
+        # backend.addValue('experiment_operation_method', data.get('experiment_operation_method'))
+        # backend.addValue('experiment_imaging_method', data.get('experiment_imaging_method'))
+        backend.closeSection('section_method', method_gid)
 
         # Read parameters related to sample
-#        backend.addValue('specimen_description', data.get('specimen_description'))
-#        backend.addValue('specimen_microstructure', data.get('specimen_microstructure'))
-#        backend.addValue('specimen_constitution', data.get('specimen_constitution'))
-        
-        #### parse chemical composition
-        
-        ### measured_pulse_voltage for instance should be a conditional read
-#        backend.addValue('measured_number_ions_evaporated', data.get('measured_number_ions_evaporated'))
-#        backend.addValue('measured_detector_hit_pos', data.get('measured_detector_hit_pos'))
-#        backend.addValue('measured_detector_hit_mult', data.get('measured_detector_hit_mult'))
-#        backend.addValue('measured_detector_dead_pulses', data.get('measured_detector_dead_pulses'))
-#       backend.addValue('measured_time_of_flight', data.get('measured_time_of_flight'))
-#        backend.addValue('measured_standing_voltage', data.get('measured_standing_voltage'))
-#        backend.addValue('measured_pulse_voltage', data.get('measured_pulse_voltage'))
-
-        
-        # To add arrays (vectors, matrices, etc.) use addArrayValues and provide a
-        # numpy array. The shape of the numpy array must match the shape defined in
-        # the respective metadata definition.
-
+        sample_gid = backend.openSection('section_sample')
+        backend.addValue('sample_description', data.get('specimen_description'))
+        backend.addValue('sample_microstructure', data.get('specimen_microstructure'))
+        backend.addValue('sample_constituents', data.get('specimen_constitution'))
+        atom_labels = data.get('specimen_chemistry')
+        formula = ase.Atoms(atom_labels).get_chemical_formula()
+        backend.addArrayValues('sample_atom_labels', np.array(atom_labels))
+        backend.addValue('sample_chemical_formula', formula)
+        backend.closeSection('section_sample', sample_gid)
 
         # Close sections in the reverse order
-        #backend.closeSection('section_experiment', data_gid)
-        #backend.closeSection('section_data', data_gid)
         backend.closeSection('section_experiment', root_gid)
-        # backend.closeSection('section_experiment_general_parameters', general_gid)
-        # backend.closeSection('section_experiment_source_parameters', source_gid)
-        # backend.closeSection('section_experiment_detector_parameters', detector_gid)
-        # backend.closeSection('section_experiment_sample_parameters', sample_gid)

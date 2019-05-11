@@ -16,14 +16,14 @@ from setuptools import setup, find_packages
 
 def main():
     setup(
-        name='skeletonparser',  # replace with new name for parser's python package
+        name='aptfimparser',  # replace with new name for parser's python package
         version='0.1',
-        description='A skeleton NOMAD parser implementation.',  # change accordingly
-        author='',  # add your names
+        description='A NOMAD parser implementation for aptfim data.',  # change accordingly
+        author='Markus Kühbach',  # add your names
         license='APACHE 2.0',
         packages=find_packages(),
         package_data={
-            'skeletonparser': ['*.json']
+            'aptfimparser': ['*.json']
         },
         install_requires=[
             'nomadcore'

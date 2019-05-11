@@ -11,29 +11,6 @@
   ],
   "metaInfos": [
     {
-      "description": "String identifier aka name of the repository where the raw data to the experiment is available",
-      "name": "data_repository_name",
-      "dtypeStr": "C",
-      "shape": [],
-      "superNames": ["section_experiment"],
-      "units": ""
-    },
-    {
-      "description": "URL of this repository",
-      "name": "data_repository_url",
-      "dtypeStr": "C",
-      "shape": [],
-      "superNames": ["section_experiment"],
-      "units": ""
-    },
-    {      "description": "Thumbnail image informing about the experiment",
-      "name": "data_preview_url",
-      "dtypeStr": "C",
-      "shape": [],
-      "superNames": ["section_experiment"],
-      "units": ""
-    },
-    {
       "description": "Shape of the None/Null object",
       "name": "none_shape",
       "dtypeStr": "i",
@@ -42,60 +19,12 @@
       "superNames": ["section_experiment"]
     },
     {
-      "description": "Full name of the experimental method in use",
-      "name": "experiment_method",
-      "dtypeStr": "C",
-      "shape": [],
-      "superNames": ["section_experiment"],
-      "units": ""
-    },
-    {
-      "description": "Name of the city and country the experiment took place, format 'Country, City'",
-      "name": "experiment_location",
-      "dtypeStr": "C",
-      "shape": [],
-      "superNames": ["section_experiment"],
-      "units": ""
-    },
-    {
-      "description": "Name of the institution hosting the experimental facility",
-      "name": "experiment_facility_institution",
-      "dtypeStr": "C",
-      "shape": [],
-      "superNames": ["section_experiment"],
-      "units": ""
-    },
-    {
       "description": "Name of the equipment, instrument with which the experiment was performed e.g. LEAP5000XS",
       "name": "experiment_tool_info",
       "dtypeStr": "C",
       "shape": [],
       "superNames": ["section_experiment"],
       "units": ""
-    },
-    {
-      "description": "UTC start time of the experiment, format 'DD.MM.YYYY - HH.MM.SS'",
-      "name": "experiment_date_global_start",
-      "dtypeStr": "C",
-      "shape": [],
-      "superNames": ["section_experiment"],
-      "units": "C"
-    },
-    {
-      "description": "UTC end time of the experiment, format 'DD.MM.YYYY - HH.MM.SS'",
-      "name": "experiment_date_global_end",
-      "dtypeStr": "C",
-      "shape": [],
-      "superNames": ["section_experiment"],
-      "units": "C"
-    },
-    {
-      "description": "Local start time of the experiment, format 'DD.MM.YYYY - HH.MM.SS'",
-      "name": "experiment_date_local_start",
-      "dtypeStr": "C",
-      "shape": [],
-      "superNames": ["section_experiment"],
-      "units": "C"
     },
     {
       "description": "Operation mode of the instrument (APT, FIM or combination)",
