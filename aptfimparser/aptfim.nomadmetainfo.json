@@ -1,0 +1,214 @@
+{
+  "type": "nomad_meta_info_1_0",
+  "description": "Metadata for an atom probe tomography or field ion microscopy experiment.",
+  "dependencies":[
+    {
+      "metainfoPath":"general.nomadmetainfo.json"
+    },
+    {
+      "metainfoPath":"general.experimental.nomadmetainfo.json"
+    }
+  ],
+  "metaInfos": [
+    {
+      "description": "String identifier aka name of the repository where the raw data to the experiment is available",
+      "name": "data_repository_name",
+      "dtypeStr": "C",
+      "shape": [],
+      "superNames": ["section_experiment"],
+      "units": ""
+    },
+    {
+      "description": "URL of this repository",
+      "name": "data_repository_url",
+      "dtypeStr": "C",
+      "shape": [],
+      "superNames": ["section_experiment"],
+      "units": ""
+    },
+    {      "description": "Thumbnail image informing about the experiment",
+      "name": "data_preview_url",
+      "dtypeStr": "C",
+      "shape": [],
+      "superNames": ["section_experiment"],
+      "units": ""
+    },
+    {
+      "description": "Shape of the None/Null object",
+      "name": "none_shape",
+      "dtypeStr": "i",
+      "kindStr": "type_dimension",
+      "shape": [],
+      "superNames": ["section_experiment"]
+    },
+    {
+      "description": "Full name of the experimental method in use",
+      "name": "experiment_method",
+      "dtypeStr": "C",
+      "shape": [],
+      "superNames": ["section_experiment"],
+      "units": ""
+    },
+    {
+      "description": "Name of the city and country the experiment took place, format 'Country, City'",
+      "name": "experiment_location",
+      "dtypeStr": "C",
+      "shape": [],
+      "superNames": ["section_experiment"],
+      "units": ""
+    },
+    {
+      "description": "Name of the institution hosting the experimental facility",
+      "name": "experiment_facility_institution",
+      "dtypeStr": "C",
+      "shape": [],
+      "superNames": ["section_experiment"],
+      "units": ""
+    },
+    {
+      "description": "Name of the equipment, instrument with which the experiment was performed e.g. LEAP5000XS",
+      "name": "experiment_tool_info",
+      "dtypeStr": "C",
+      "shape": [],
+      "superNames": ["section_experiment"],
+      "units": ""
+    },
+    {
+      "description": "UTC start time of the experiment, format 'DD.MM.YYYY - HH.MM.SS'",
+      "name": "experiment_date_global_start",
+      "dtypeStr": "C",
+      "shape": [],
+      "superNames": ["section_experiment"],
+      "units": "C"
+    },
+    {
+      "description": "UTC end time of the experiment, format 'DD.MM.YYYY - HH.MM.SS'",
+      "name": "experiment_date_global_end",
+      "dtypeStr": "C",
+      "shape": [],
+      "superNames": ["section_experiment"],
+      "units": "C"
+    },
+    {
+      "description": "Local start time of the experiment, format 'DD.MM.YYYY - HH.MM.SS'",
+      "name": "experiment_date_local_start",
+      "dtypeStr": "C",
+      "shape": [],
+      "superNames": ["section_experiment"],
+      "units": "C"
+    },
+    {
+      "description": "Operation mode of the instrument (APT, FIM or combination)",
+      "name": "experiment_operation_method",
+      "dtypeStr": "C",
+      "shape": [],
+      "superNames": ["section_experiment"],
+      "units": ""
+    },
+    {
+      "description": "Pulsing method to enforce a controlled ion evaporation sequence",
+      "name": "experiment_imaging_method",
+      "dtypeStr": "C",
+      "shape": [],
+      "superNames": ["section_experiment"],
+      "units": ""
+    },
+    {
+      "description": "Sample description e.g. pure W wire samples trial 2",
+      "name": "specimen_description",
+      "dtypeStr": "C",
+      "shape": [],
+      "superNames": ["section_experiment"],
+      "units": ""
+    },
+    {
+      "description": "Number of elements (disjoint element names) expected",
+      "name": "number_of_elements",
+      "dtypeStr": "i",
+      "kindStr": "type_dimension",
+      "shape": [],
+      "superNames": ["section_experiment"],
+      "units": ""
+    },
+    {
+      "description": "List of periodic table names expected contained in dataset",
+      "name": "specimen_chemistry",
+      "dtypeStr": "C",
+      "shape": ["number_of_elements"],
+      "superNames": ["section_experiment"],
+      "units": ""
+    },
+    {
+      "description": "Qualitative type of specimen and microstructure analyzed (e.g. thin films, nano objects, single crystal, polycrystal)",
+      "name": "specimen_microstructure",
+      "dtypeStr": "C",
+      "shape": [],
+      "superNames": ["section_experiment"],
+      "units": ""
+    },
+    {
+      "description": "Qualitative information how many phases in the specimen",
+      "name": "specimen_constitution",
+      "dtypeStr": "C",
+      "shape": [],
+      "superNames": ["section_experiment"],
+      "units": ""
+    },
+	{
+      "description": "Number of ions successfully evaporated",
+      "name": "measured_number_ions_evaporated",
+      "dtypeStr": "i",
+      "shape": [],
+      "superNames": ["section_experiment"],
+      "units": "1"
+    },
+    {
+      "description": "Detector hit positions x and y",
+      "name": "measured_detector_hit_pos",
+      "dtypeStr": "C",
+      "shape": [],
+      "superNames": ["section_experiment"],
+      "units": "mm, mm"
+    },
+    {
+      "description": "Detector hit multiplicity",
+      "name": "measured_detector_hit_mult",
+      "dtypeStr": "C",
+      "shape": [],
+      "superNames": ["section_experiment"],
+      "units": "1"
+    },
+    {
+      "description": "Detector number of dead pulses",
+      "name": "measured_detector_dead_pulses",
+      "dtypeStr": "C",
+      "shape": [],
+      "superNames": ["section_experiment"],
+      "units": "1"
+    },
+    {
+      "description": "Raw ion time of flight",
+      "name": "measured_time_of_flight",
+      "dtypeStr": "C",
+      "shape": [],
+      "superNames": ["section_experiment"],
+      "units": "ns"
+    },
+    {
+      "description": "Standing voltage",
+      "name": "measured_standing_voltage",
+      "dtypeStr": "C",
+      "shape": [],
+      "superNames": ["section_experiment"],
+      "units": "V"
+    },
+    {
+      "description": "Pulse voltage",
+      "name": "measured_pulse_voltage",
+      "dtypeStr": "C",
+      "shape": [],
+      "superNames": ["section_experiment"],
+      "units": "V"
+    }
+  ]
+}
