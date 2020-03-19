@@ -22,8 +22,6 @@ from datetime import datetime
 from nomadcore.simple_parser import SimpleMatcher
 from nomadcore.baseclasses import ParserInterface, AbstractBaseParser
 
-from nomad.parsing import LocalBackend
-
 
 class APTFIMParserInterface(ParserInterface):
     def get_metainfo_filename(self):
