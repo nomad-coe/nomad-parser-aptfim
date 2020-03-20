@@ -63,14 +63,14 @@ class section_experiment(general_experimental.section_experiment):
         ''',
         a_legacy=LegacyDefinition(name='specimen_description'))
 
-    number_of_elements = Quantity(
+    number_of_disjoint_elements = Quantity(
         type=int,
         shape=[],
         unit='dimensionless',
         description='''
         Number of elements (disjoint element names) expected
         ''',
-        a_legacy=LegacyDefinition(name='number_of_elements'))
+        a_legacy=LegacyDefinition(name='number_of_disjoint_elements'))
 
     specimen_chemistry = Quantity(
         type=str,
