@@ -19,75 +19,57 @@ import re
 import numpy as np
 from datetime import datetime
 
-from nomadcore.simple_parser import SimpleMatcher
-from nomadcore.baseclasses import ParserInterface, AbstractBaseParser
+from .metainfo import m_env
+from nomad.parsing.parser import MatchingParser
+from nomad.datamodel.metainfo.general_experimental import section_experiment as msection_experiment
+from nomad.datamodel.metainfo.general_experimental import section_data as msection_data
+from nomad.datamodel.metainfo.general_experimental_method import section_method as msection_method
+from nomad.datamodel.metainfo.general_experimental_sample import section_sample as msection_sample
 
 
-class APTFIMParserInterface(ParserInterface):
-    def get_metainfo_filename(self):
-        """
-        The parser specific metainfo. To include other metadata definitions, use
-        the 'dependencies' key to refer to other local nomadmetainfo.json files or
-        to nomadmetainfo.json files that are part of the general nomad-meta-info
-        submodule (i.e. ``dependencies/nomad-meta-info``).
-         """
-        return os.path.join(os.path.dirname(__file__), 'aptfim.nomadmetainfo.json')
+class APTFIMParser(MatchingParser):
+    def __init__(self):
+        super().__init__(
+            name='parsers/aptfim', code_name='mpes', code_homepage='https://github.com/mpes-kit/mpes',
+            domain='ems', mainfile_mime_re=r'(application/json)|(text/.*)', mainfile_name_re=(r'.*.aptfim')
+        )
 
-    def get_parser_info(self):
-        """ Basic info about parser used in archive data and logs. """
-        return {
-            'name': 'aptfimparser',
-            'version': '0.1.0'
-        }
-
-    def setup_version(self):
-        """ Can be used to call :func:`setup_main_parser` differently for different code versions. """
-        self.setup_main_parser(None)
-
-    def setup_main_parser(self, _):
-        """ Setup the actual parser (behind this interface) """
-        self.main_parser = APTFIMParser(self.parser_context)
-
-
-class APTFIMParser(AbstractBaseParser):
-
-    def parse(self, filepath):
-        backend = self.parser_context.super_backend
+    def run(self, filepath, logger=None):
+        self._metainfo_env = m_env
 
         with open(filepath, 'rt') as f:
             data = json.load(f)
 
-        root_gid = backend.openSection('section_experiment')
+        section_experiment = msection_experiment()
 
         # Read general tool environment details
-        backend.addValue('experiment_location', data.get('experiment_location'))
-        backend.addValue('experiment_facility_institution', data.get('experiment_facility_institution'))
-        backend.addValue('experiment_summary', '%s of %s.' % (data.get('experiment_method').capitalize(), data.get('specimen_description')))
+        section_experiment.experiment_location = data.get('experiment_location')
+        section_experiment.experiment_facility_institution = data.get('experiment_facility_institution')
+        section_experiment.experiment_summary = '%s of %s.' % (data.get('experiment_method').capitalize(), data.get('specimen_description'))
         try:
-            backend.addValue('experiment_time', int(datetime.strptime(data.get('experiment_date_global_start'), '%d.%m.%Y %M:%H:%S').timestamp()))
+            section_experiment.experiment_time = int(datetime.strptime(data.get('experiment_date_global_start'), '%d.%m.%Y %M:%H:%S').timestamp())
         except ValueError:
             pass
         try:
-            backend.addValue('experiment_end_time', int(datetime.strptime(data.get('experiment_date_global_end'), '%d.%m.%Y %M:%H:%S').timestamp()))
+            section_experiment.experiment_end_time = int(datetime.strptime(data.get('experiment_date_global_end'), '%d.%m.%Y %M:%H:%S').timestamp())
         except ValueError:
             pass
 
         # Read data parameters
-        data_gid = backend.openSection('section_data')
-        backend.addValue('data_repository_name', data.get('data_repository_name'))
-        backend.addValue('data_repository_url', data.get('data_repository_url'))
+        section_data = section_experiment.m_create(msection_data)
+        section_data.data_repository_name = data.get('data_repository_name')
+        section_data.data_preview_url = data.get('data_repository_url')
         preview_url = data.get('data_preview_url')
         # TODO: This a little hack to correct the preview url and should be removed
         # after urls are corrected
         preview_url = '%s/files/%s' % tuple(preview_url.rsplit('/', 1))
-        backend.addValue('data_preview_url', preview_url)
-        backend.closeSection('section_data', data_gid)
+        section_data.data_preview_url = preview_url
 
         # Read parameters related to method
-        method_gid = backend.openSection('section_method')
-        backend.addValue('experiment_method_name', data.get('experiment_method'))
-        backend.addValue('experiment_method_abbreviation', 'APT/FIM')
-        backend.addValue('probing_method', 'electric pulsing')
+        section_method = section_experiment.m_create(msection_method)
+        section_method.experiment_method_name = data.get('experiment_method')
+        section_method.experiment_method_abbreviation = 'APT/FIM'
+        section_method.probing_method = 'electric pulsing'
         # backend.addValue('experiment_tool_info', data.get('instrument_info')) ###test here the case that input.json keyword is different to output.json
         # measured_pulse_voltage for instance should be a conditional read
         # backend.addValue('measured_number_ions_evaporated', data.get('measured_number_ions_evaporated'))
@@ -99,18 +81,15 @@ class APTFIMParser(AbstractBaseParser):
         # backend.addValue('measured_pulse_voltage', data.get('measured_pulse_voltage'))
         # backend.addValue('experiment_operation_method', data.get('experiment_operation_method'))
         # backend.addValue('experiment_imaging_method', data.get('experiment_imaging_method'))
-        backend.closeSection('section_method', method_gid)
 
         # Read parameters related to sample
-        sample_gid = backend.openSection('section_sample')
-        backend.addValue('sample_description', data.get('specimen_description'))
-        backend.addValue('sample_microstructure', data.get('specimen_microstructure'))
-        backend.addValue('sample_constituents', data.get('specimen_constitution'))
+        section_sample = section_experiment.m_create(msection_sample)
+        section_sample.sample_description = data.get('specimen_description')
+        section_sample.sample_microstructure = data.get('specimen_microstructure')
+        section_sample.sample_constituents = data.get('specimen_constitution')
         atom_labels = data.get('specimen_chemistry')
         formula = ase.Atoms(atom_labels).get_chemical_formula()
-        backend.addArrayValues('sample_atom_labels', np.array(atom_labels))
-        backend.addValue('sample_chemical_formula', formula)
-        backend.closeSection('section_sample', sample_gid)
+        section_sample.sample_atom_labels = np.array(atom_labels)
+        section_sample.sample_chemical_formula = formula
 
-        # Close sections in the reverse order
-        backend.closeSection('section_experiment', root_gid)
+        return section_experiment
