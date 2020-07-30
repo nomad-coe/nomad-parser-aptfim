@@ -19,28 +19,25 @@ import re
 import numpy as np
 from datetime import datetime
 
-from .metainfo import m_env
-from nomad.parsing.parser import MatchingParser
-from nomad.datamodel.metainfo.general_experimental import section_experiment as msection_experiment
-from nomad.datamodel.metainfo.general_experimental import section_data as msection_data
-from nomad.datamodel.metainfo.general_experimental_method import section_method as msection_method
-from nomad.datamodel.metainfo.general_experimental_sample import section_sample as msection_sample
+from nomad.parsing.parser import FairdiParser
+from nomad.datamodel.metainfo.general_experimental import section_experiment as SectionExperiment
+from nomad.datamodel.metainfo.general_experimental import section_data as SectionData
+from nomad.datamodel.metainfo.general_experimental_method import section_method as SectionMethod
+from nomad.datamodel.metainfo.general_experimental_sample import section_sample as SectionSample
 
 
-class APTFIMParser(MatchingParser):
+class APTFIMParser(FairdiParser):
     def __init__(self):
         super().__init__(
             name='parsers/aptfim', code_name='mpes', code_homepage='https://github.com/mpes-kit/mpes',
             domain='ems', mainfile_mime_re=r'(application/json)|(text/.*)', mainfile_name_re=(r'.*.aptfim')
         )
 
-    def run(self, filepath, logger=None):
-        self._metainfo_env = m_env
-
+    def parse(self, filepath, archive, logger=None):
         with open(filepath, 'rt') as f:
             data = json.load(f)
 
-        section_experiment = msection_experiment()
+        section_experiment = archive.m_create(SectionExperiment)
 
         # Read general tool environment details
         section_experiment.experiment_location = data.get('experiment_location')
@@ -56,7 +53,7 @@ class APTFIMParser(MatchingParser):
             pass
 
         # Read data parameters
-        section_data = section_experiment.m_create(msection_data)
+        section_data = section_experiment.m_create(SectionData)
         section_data.data_repository_name = data.get('data_repository_name')
         section_data.data_preview_url = data.get('data_repository_url')
         preview_url = data.get('data_preview_url')
@@ -66,7 +63,7 @@ class APTFIMParser(MatchingParser):
         section_data.data_preview_url = preview_url
 
         # Read parameters related to method
-        section_method = section_experiment.m_create(msection_method)
+        section_method = section_experiment.m_create(SectionMethod)
         section_method.experiment_method_name = data.get('experiment_method')
         section_method.experiment_method_abbreviation = 'APT/FIM'
         section_method.probing_method = 'electric pulsing'
@@ -83,7 +80,7 @@ class APTFIMParser(MatchingParser):
         # backend.addValue('experiment_imaging_method', data.get('experiment_imaging_method'))
 
         # Read parameters related to sample
-        section_sample = section_experiment.m_create(msection_sample)
+        section_sample = section_experiment.m_create(SectionSample)
         section_sample.sample_description = data.get('specimen_description')
         section_sample.sample_microstructure = data.get('specimen_microstructure')
         section_sample.sample_constituents = data.get('specimen_constitution')
@@ -91,5 +88,3 @@ class APTFIMParser(MatchingParser):
         formula = ase.Atoms(atom_labels).get_chemical_formula()
         section_sample.sample_atom_labels = np.array(atom_labels)
         section_sample.sample_chemical_formula = formula
-
-        return section_experiment

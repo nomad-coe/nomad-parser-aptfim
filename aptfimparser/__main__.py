@@ -12,15 +12,10 @@
 #   limitations under the License.
 
 import sys
+import json
 
-from nomad.parsing import LocalBackend
-from aptfimparser import APTFIMParserInterface
+from aptfimparser import APTFIMParser
 
 if __name__ == "__main__":
-    # instantiate the parser via its interface with a LocalBackend
-    parser = APTFIMParserInterface(backend=LocalBackend)
-    # call the actual parsing with the given mainfile
-    parser.parse(sys.argv[1])
-    # print the results stored in the LocalBackend
-    parser.parser_context.super_backend.write_json(
-        sys.stdout, pretty=True, root_sections=['section_experiment'])
+    archive = APTFIMParser.main(sys.argv[1])
+    json.dump(archive.m_to_dict(), sys.stdout, indent=2)
