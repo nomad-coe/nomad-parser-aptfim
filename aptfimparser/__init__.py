@@ -20,10 +20,11 @@ import numpy as np
 from datetime import datetime
 
 from nomad.parsing.parser import FairdiParser
-from nomad.datamodel.metainfo.general_experimental import section_experiment as SectionExperiment
-from nomad.datamodel.metainfo.general_experimental import section_data as SectionData
-from nomad.datamodel.metainfo.general_experimental_method import section_method as SectionMethod
-from nomad.datamodel.metainfo.general_experimental_sample import section_sample as SectionSample
+from nomad.datamodel.metainfo.general_experimental import (
+    section_experiment as SectionExperiment,
+    section_data as SectionData,
+    section_method as SectionMethod,
+    section_sample as SectionSample)
 
 
 class APTFIMParser(FairdiParser):
