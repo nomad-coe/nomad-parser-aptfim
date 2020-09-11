@@ -1,0 +1,7 @@
+codeLabel: APTFIM
+codeLabelStyle: all in capitals
+codeUrl: ??
+parserDirName: dependencies/parsers/aptfim/
+parserGitUrl: https://gitlab.mpcdf.mpg.de/mkuehbac/parser-aptfim
+parserSpecific: ''
+tableOfFiles: ''
