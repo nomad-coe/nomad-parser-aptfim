@@ -31,9 +31,7 @@ def main():
         package_data={
             'aptfimparser': ['*.json']
         },
-        install_requires=[
-            'nomadcore'
-        ],
+        install_requires=[],
     )
 
 
